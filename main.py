@@ -35,6 +35,9 @@ app.add_middleware(
 
 @app.middleware("http")
 async def rate_limit_middleware(request: Request, call_next):
+    if os.getenv("ENVIRONMENT") == "development":
+        return await call_next(request)
+    
     client_ip = request.client.host if request.client else "unknown"
     
     auth_endpoints = ["/auth/login", "/auth/register", "/users/create"]
